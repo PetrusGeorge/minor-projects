@@ -5,8 +5,10 @@
 
 class Binary : public Number{
 
+    std::vector<unsigned short> auxNumber;
+    
     public:
-        Binary();
+        Binary(const std::string& number);
         std::string convertToBinary();
         std::string convertToOctal();
         std::string convertToDecimal();

@@ -18,7 +18,7 @@ class Converter{
         ~Converter();
         Converter(const std::string& number, short unsigned inputType, short unsigned outputType);
         bool checkIfNumberIsValid();
-        std::string converte();
+        std::string convert();
 };
 
 #endif

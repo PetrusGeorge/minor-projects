@@ -5,8 +5,10 @@
 
 class Octal : public Number{
 
+    std::vector<unsigned short> auxNumber;
+
     public:
-        Octal();
+        Octal(const std::string& number);
         std::string convertToBinary();
         std::string convertToOctal();
         std::string convertToDecimal();

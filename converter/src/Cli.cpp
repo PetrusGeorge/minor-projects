@@ -2,13 +2,20 @@
 
 Cli::Cli(){
 
-    this->converter = Converter();
-    this->output.clear();
+    this->converter = NULL;
+}
+
+Cli::~Cli(){
+
+    if(converter != NULL){
+        delete converter;
+    }
 }
 
 void Cli::start(){
 
     this->prompt();
+    this->printNumber();
 }
 
 void Cli::prompt(){
@@ -51,10 +58,20 @@ void Cli::prompt(){
         std::cin >> input;
         std::cin.ignore();
 
+        this->convertToType(input); //checks if it has to quit
+        
+        this->converter = new Converter(input, IOType.first, IOType.second);
+
+        if(converter->checkIfNumberIsValid()){
+
+            break;
+        }
+
+        delete converter;
+        converter = NULL;
 
         std::cout << "Invalid value, try again" << std::endl;
     }
-
 }
 
 short unsigned Cli::convertToType(std::string input){
@@ -92,7 +109,8 @@ short unsigned Cli::convertToType(std::string input){
 
 void Cli::printNumber(){
 
-    std::cout << output << std::endl;
+    std::cout << "The corresponding number is: ";
+    std::cout << this->converter->convert() << std::endl;
 }
 
 void Cli::quit(){

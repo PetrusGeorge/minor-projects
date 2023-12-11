@@ -10,14 +10,14 @@
 
 class Cli{
 
-    Converter converter;
-    std::string output;
+    Converter *converter;
 
     unsigned short convertToType(std::string input);
     void quit();
 
     public:
         Cli();
+        ~Cli();
         void start();
         void prompt();
         void printNumber();

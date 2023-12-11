@@ -4,15 +4,17 @@
 
 int main(){
 
-    Cli cli;
+    Cli *cli = new Cli();
 
     try{
-        cli.start();
+        cli->start();
     }catch(std::string *e){
     
         std::cout << *e << std::endl;
         delete e;
     }
+
+    delete cli;
 
     return 0;
 }

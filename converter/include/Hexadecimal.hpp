@@ -2,13 +2,14 @@
 #define HEXADECIMAL_HPP
 
 #include "Number.hpp"
-
-enum{A = 10, B, C, D, E, F};
+#include <boost/algorithm/string.hpp>
 
 class Hexadecimal : public Number{
 
+    std::vector<unsigned short> auxNumber;
+
     public:
-        Hexadecimal();
+        Hexadecimal(const std::string& number);
         std::string convertToBinary();
         std::string convertToOctal();
         std::string convertToDecimal();
