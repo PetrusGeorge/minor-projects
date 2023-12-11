@@ -6,12 +6,16 @@ int main(){
 
     Cli *cli = new Cli();
 
-    try{
-        cli->start();
-    }catch(std::string *e){
-    
-        std::cout << *e << std::endl;
-        delete e;
+    while(true){
+
+        try{
+            cli->start();
+        }catch(std::string *q){
+        
+            std::cout << *q << std::endl;
+            delete q;
+            break;
+        }
     }
 
     delete cli;

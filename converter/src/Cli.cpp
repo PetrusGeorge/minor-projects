@@ -24,7 +24,7 @@ void Cli::prompt(){
     std::pair<short unsigned, short unsigned> IOType;
 
     while(true){
-        std::cout << "Enter the input type, B = Binary, O = Octal, D = Decimal, H = Hexadecimal, Q = quit program" << std::endl;
+        std::cout << std::endl << "Enter the input type, B = Binary, O = Octal, D = Decimal, H = Hexadecimal, Q = quit program" << std::endl;
         std::cin >> input;
         std::cin.ignore();
 
@@ -35,11 +35,11 @@ void Cli::prompt(){
             break;
         }
 
-        std::cout << "Invalid value, try again" << std::endl;
+        std::cout << std::endl << "Invalid value, try again" << std::endl;
     }
 
     while(true){
-        std::cout << "Enter the output type, B = Binary, O = Octal, D = Decimal, H = Hexadecimal, Q = quit program" << std::endl;
+        std::cout << std::endl << "Enter the output type, B = Binary, O = Octal, D = Decimal, H = Hexadecimal, Q = quit program" << std::endl;
         std::cin >> input;
         std::cin.ignore();
 
@@ -50,11 +50,11 @@ void Cli::prompt(){
             break;
         }
 
-        std::cout << "Invalid value, try again" << std::endl;
+        std::cout << std::endl << "Invalid value, try again" << std::endl;
     }
 
     while(true){
-        std::cout << "Enter a value (Q = Sair do programa)" << std::endl;
+        std::cout << std::endl << "Enter a value (Q = Sair do programa)" << std::endl;
         std::cin >> input;
         std::cin.ignore();
 
@@ -70,7 +70,7 @@ void Cli::prompt(){
         delete converter;
         converter = NULL;
 
-        std::cout << "Invalid value, try again" << std::endl;
+        std::cout << std::endl << "Invalid value, try again" << std::endl;
     }
 }
 
@@ -109,13 +109,13 @@ short unsigned Cli::convertToType(std::string input){
 
 void Cli::printNumber(){
 
-    std::cout << "The corresponding number is: ";
+    std::cout << std::endl << "The corresponding number is: ";
     std::cout << this->converter->convert() << std::endl;
 }
 
 void Cli::quit(){
 
-    std::string *mensage = new std::string("O programa terminou");
+    std::string *mensage = new std::string("Quit");
 
     throw mensage;
 }

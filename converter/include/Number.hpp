@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
+#include <algorithm>
 
 enum{UNDEFINED, BINARY, OCTAL, DECIMAL, HEXADECIMAL};
 enum{A = 10, B, C, D, E, F};
