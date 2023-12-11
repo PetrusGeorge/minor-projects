@@ -8,14 +8,10 @@
 #include <utility>
 #include <boost/algorithm/string.hpp>
 
-enum{UNDEFINED, BINARY, OCTAL, DECIMAL, HEXADECIMAL};
-enum{A = 10, B, C, D, E, F};
-
 class Cli{
 
     Converter converter;
     std::string output;
-    std::pair<short unsigned, short unsigned> IOType;
 
     unsigned short convertToType(std::string input);
     void quit();
