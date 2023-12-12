@@ -3,7 +3,7 @@
 Octal::Octal(const std::string& number){
 
     this->auxNumber.clear();
-    this->valid = not number.empty() and number.find_first_not_of("01234567", 1) == std::string::npos;
+    this->valid = not number.empty() and number.find_first_not_of("01234567", 0) == std::string::npos;
 
     if(not this->valid){
 

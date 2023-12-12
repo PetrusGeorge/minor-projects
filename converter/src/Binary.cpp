@@ -4,7 +4,7 @@
 Binary::Binary(const std::string& number){
 
     this->auxNumber.clear();
-    this->valid = not number.empty() and number.find_first_not_of("01", 1) == std::string::npos;
+    this->valid = not number.empty() and number.find_first_not_of("01", 0) == std::string::npos;
 
     if(not this->valid){
 

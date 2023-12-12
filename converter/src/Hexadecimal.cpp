@@ -10,7 +10,7 @@ Hexadecimal::Hexadecimal(const std::string& num){
     std::string number = boost::to_upper_copy(num);
 
     this->auxNumber.clear();
-    this->valid = not number.empty() and number.find_first_not_of("0123456789ABCDEF", 1) == std::string::npos;
+    this->valid = not number.empty() and number.find_first_not_of("0123456789ABCDEF", 0) == std::string::npos;
 
     if(not this->valid){
 

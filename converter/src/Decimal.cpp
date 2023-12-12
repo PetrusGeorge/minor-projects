@@ -2,7 +2,7 @@
 
 Decimal::Decimal(const std::string& number){
 
-    this->valid = not number.empty() and number.find_first_not_of("0123456789", 1) == std::string::npos;
+    this->valid = not number.empty() and number.find_first_not_of("0123456789", 0) == std::string::npos;
 
     if(not this->valid){
 
