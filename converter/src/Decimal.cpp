@@ -35,6 +35,14 @@ std::string Decimal::convertToOctal(){
 
     std::string output;
 
+    long unsigned copy = auxNumber;
+    
+    while(copy != 0){
+
+        output = std::to_string(copy%8) + output;
+        copy /= 8;
+    }
+
     return output;
 }
 
@@ -46,6 +54,14 @@ std::string Decimal::convertToDecimal(){
 std::string Decimal::convertToHexadecimal(){
 
     std::string output;
+
+    long unsigned copy = auxNumber;
+    
+    while(copy != 0){
+
+        output = Number::numberToString(std::vector<unsigned short>(1,copy%16)) + output;
+        copy /= 16;
+    }
 
     return output;
 }
