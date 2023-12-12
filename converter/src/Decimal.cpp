@@ -2,7 +2,6 @@
 
 Decimal::Decimal(const std::string& number){
 
-    this->auxNumber.clear();
     this->valid = not number.empty() and number.find_first_not_of("0123456789", 1) == std::string::npos;
 
     if(not this->valid){
@@ -10,15 +9,24 @@ Decimal::Decimal(const std::string& number){
         return;
     }
 
-    for(size_t i = 0; i < number.size(); i++){
-
-        this->auxNumber.push_back(number[i] - '0');
-    }
+    this->auxNumber = std::stoi(number);
+    // for(size_t i = 0; i < number.size(); i++){
+    //
+    //     this->auxNumber.push_back(number[i] - '0');
+    // }
 }
 
 std::string Decimal::convertToBinary(){
 
     std::string output;
+
+    long unsigned copy = auxNumber;
+    
+    while(copy != 0){
+
+        output = std::to_string(copy%2) + output;
+        copy /= 2;
+    }
 
     return output;
 }
@@ -32,7 +40,7 @@ std::string Decimal::convertToOctal(){
 
 std::string Decimal::convertToDecimal(){
 
-    return Number::numberToString(this->auxNumber);
+    return std::to_string(this->auxNumber);
 }
 
 std::string Decimal::convertToHexadecimal(){

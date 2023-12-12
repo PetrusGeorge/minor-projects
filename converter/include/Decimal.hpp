@@ -5,7 +5,7 @@
 
 class Decimal : public Number{
     
-   std::vector<unsigned short> auxNumber;
+   long unsigned auxNumber;
 
     public:
         Decimal(const std::string& number);

@@ -32,6 +32,14 @@ std::string Octal::convertToDecimal(){
 
     std::string output;
 
+    long unsigned sum = 0;
+    for(size_t i = 0; i < this->auxNumber.size(); i++){
+
+        sum += this->auxNumber[this->auxNumber.size() - 1 - i] * pow(8, i);
+    }
+
+    output = std::to_string(sum);
+
     return output;
 }
 

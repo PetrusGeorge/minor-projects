@@ -1,17 +1,6 @@
 #include "Binary.hpp"
 #include <iostream>
 
-unsigned long binToDec(const std::vector<unsigned short>& bin){
-
-    long unsigned sum = 0;
-    for(size_t i = 0; i < bin.size(); i++){
-
-        sum += bin[bin.size() - 1 - i] * pow(2, i);
-    }
-
-    return sum;
-}
-
 Binary::Binary(const std::string& number){
 
     this->auxNumber.clear();
@@ -51,7 +40,7 @@ std::string Binary::convertToOctal(){
         }
         std::reverse(aux.begin(), aux.end());
 
-        output = std::to_string(binToDec(aux)) + output;
+        output = std::to_string(Number::binToDec(aux)) + output;
     }
 
     return output;
@@ -60,7 +49,7 @@ std::string Binary::convertToOctal(){
 std::string Binary::convertToDecimal(){
 
     std::string output;
-    output = std::to_string(binToDec(this->auxNumber));
+    output = std::to_string(Number::binToDec(this->auxNumber));
 
     return output;
 }
@@ -83,7 +72,7 @@ std::string Binary::convertToHexadecimal(){
         }
         std::reverse(aux.begin(), aux.end());
 
-        output = Number::numberToString(std::vector<unsigned short>(1,binToDec(aux))) + output;
+        output = Number::numberToString(std::vector<unsigned short>(1,Number::binToDec(aux))) + output;
     }
 
     return output;

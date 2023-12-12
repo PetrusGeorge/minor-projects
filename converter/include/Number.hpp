@@ -21,6 +21,7 @@ class Number{
         virtual std::string convertToDecimal() = 0;
         virtual std::string convertToHexadecimal() = 0;
         static std::string numberToString(const std::vector<unsigned short>& number); //includes Hexadecimal letters
+        static unsigned long binToDec(const std::vector<unsigned short>& bin);
         
         bool isValid();
 };
