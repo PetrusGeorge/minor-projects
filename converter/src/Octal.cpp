@@ -1,4 +1,19 @@
 #include "Octal.hpp"
+#include "Binary.hpp"
+
+std::string octDigitToBinary(unsigned int octDigit) {
+    switch (octDigit) {
+        case 0: return "000";
+        case 1: return "001";
+        case 2: return "010";
+        case 3: return "011";
+        case 4: return "100";
+        case 5: return "101";
+        case 6: return "110";
+        case 7: return "111";
+        default: return "";
+    }
+}
 
 Octal::Octal(const std::string& number){
 
@@ -19,6 +34,11 @@ Octal::Octal(const std::string& number){
 std::string Octal::convertToBinary(){
 
     std::string output;
+
+    for(size_t i = 0; i < this->auxNumber.size(); i++){
+
+        output += octDigitToBinary(this->auxNumber[i]);
+    }
 
     return output;
 }
@@ -45,7 +65,7 @@ std::string Octal::convertToDecimal(){
 
 std::string Octal::convertToHexadecimal(){
 
-    std::string output;
+    Binary b = Binary(this->convertToBinary());
 
-    return output;
+    return b.convertToHexadecimal();
 }
