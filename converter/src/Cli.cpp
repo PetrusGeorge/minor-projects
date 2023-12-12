@@ -1,5 +1,14 @@
 #include "Cli.hpp"
 
+std::string removeZeros(const std::string& input) {
+    size_t index = input.find_first_not_of('0');
+
+    if (index == std::string::npos) {
+        return "0";
+    }
+
+    return input.substr(index);
+}
 Cli::Cli(){
 
     this->converter = NULL;
@@ -109,8 +118,9 @@ short unsigned Cli::convertToType(std::string input){
 
 void Cli::printNumber(){
 
+    std::string output = removeZeros(this->converter->convert());
     std::cout << std::endl << "The corresponding number is: ";
-    std::cout << this->converter->convert() << std::endl;
+    std::cout << output << std::endl;
 }
 
 void Cli::quit(){
