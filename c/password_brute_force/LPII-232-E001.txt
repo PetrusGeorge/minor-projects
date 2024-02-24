@@ -1,0 +1,61 @@
+UNIVERSIDADE FEDERAL DA PARAÍBA – CENTRO DE INFORMÁTICA
+LPII - Programação Concorrente - 2023.2
+Prof. Carlos Eduardo Batista
+Pontuação: 3,0 pontos 
+
+-------------------------------------------------------------------------------
+* Entrega por email: bidu @ ci . ufpb . br
+
+* O   título   do   e-mail   deve   conter (substituir nome e matrícula):   
+“[LPII-20232-E001]   NOME   DO  ALUNO   –   MATRICULA”. 
+
+* Arquivo de entrega deve anexar todos os códigos fonte em C/C++ dentro de um 
+diretório nomeado “MATRICULA_LPII-20232-E001” o  qual   deve   ser 
+comprimido   em   um   arquivo   ZIP ("MATRICULA_LPII-20232-E001.zip").
+
+* O arquivo ZIP deve conter obrigatoriamente um arquivo   de   texto   chamado
+README.txt contemplando   todas   as   instruções   de   compilação e execução,
+além de qualquer observação que se fizer necessária para correção. 
+
+* O NÃO ATENDIMENTO ÀS INSTRUÇÕES ACIMA IMPLICARÁ NA NÃO CORREÇÃO DO EXERCÍCIO.
+
+* TRABALHO INDIVIDUAL - plágio será punido com a não correção do exercício.
+
+-------------------------------------------------------------------------------
+
+Você trabalha em uma empresa em que existem 10 arquivos de senhas 
+criptografadas que precisam ser recuperadas. O algoritmo que descriptografa as 
+senhas foi perdido, restando apenas o código que realiza a codificação das 
+senhas:
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#define NUM_LETRAS 26
+#define ASCII_A 65
+
+char* encrypt(const char* str, int tamanho) {
+    char* str_result = (char*) malloc(sizeof(char)*tamanho);
+    for (int i = 0; i < tamanho; i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+            int chave = str[i] - ASCII_A;
+            str_result[i] = (str[i] - ASCII_A + chave) % NUM_LETRAS + ASCII_A;
+        }
+    }
+    return str_result;
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Suponha que não seja possível fazer a engenharia reversa do código e que você 
+deva recuperar as senhas contidas nos 10 arquivos utilizando "força bruta"; 
+faça então um programa em C que utilize processos para realizar as tentativas
+em concorrência. As senhas tem 4 caracteres e são compostas apenas por letras
+maiúsculas. Seu código então deverá gerar todas strings de 4 caracteres para
+cada entrada do arquivo de senhas e testar se a versão criptografada da palavra
+gerada é igual a palavra criptografada no arquivo - em caso positivo, a senha 
+foi quebrada.
+
+O código deve exibir as senhas quebradas ou gerar um arquivo com as senhas 
+recuperadas. O código deve ser TODO documentado, principalmente no tocante à
+manipulação de processos. Faça cada arquivo ser manipulado por um processo 
+diferente e faça o processo original aguardar o término de todos os processos.
