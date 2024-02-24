@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <string.h>
@@ -9,13 +8,15 @@
 #define NUM_LETRAS 26
 #define ASCII_A 65
 
-#define QTDFILES 10
-#define QTDSENHASPORFILE 10
-#define TAMANHOSENHA 4
+#define QTDFILES 10 //quantidade de senhas na pasta senhas
+#define QTDSENHASPORFILE 10 //quantidade de senhas em cada arquivo da pasta senhas
+#define TAMANHOSENHA 4 //o tamanho da senha sem considera /0 ou /n
 
 typedef struct Passwords{
 
-    char strings[QTDSENHASPORFILE][TAMANHOSENHA + 1];
+    char encrypted[QTDSENHASPORFILE][TAMANHOSENHA + 2];//guarda as senha encriptadas lidas do arquivo
+    char decrypted[QTDSENHASPORFILE][TAMANHOSENHA + 2];//guarda as senhas decrypitadas pelo programa
+    //ambas consideram o caractere \n e \0 em seu tamanho inclusive quando não são usadas
 }Passwords;
 
 char* encrypt(const char* str, int tamanho) {
@@ -29,14 +30,78 @@ char* encrypt(const char* str, int tamanho) {
     return str_result;
 }
 
+void remove_newline(char* string){
+
+    int i;
+    for(i = 0; string[i] != '\0'; i++);//incrementa i até o final da string
+    if(string[i-1] == '\n') string[i-1] = '\0';//remove o \n se ele estiver anterios ao final da string
+}
+
 Passwords brute_force(const char* file_name){
+
+    FILE *fencrypted;
+
+    if((fencrypted = fopen(file_name, "r")) == NULL){//tenta abrir o arquivo de senhas
+
+        perror("Could not open encrypted file\n");
+        exit(1);
+    }
 
     Passwords passwords;
 
     for(int i = 0; i < QTDSENHASPORFILE; i++){
 
-        strcpy(passwords.strings[i], "HGDK");
+        if(fgets(passwords.encrypted[i], TAMANHOSENHA + 2, fencrypted) == NULL) break; //le cada linha das senhas e caso o arquivo acabe antes do esperado ocorre um break
+        remove_newline(passwords.encrypted[i]);
     }
+
+    for(int i = 0; i < QTDSENHASPORFILE; i++){//itera por cada linha das senhas
+
+        char attempt_password[TAMANHOSENHA + 1]; //guarda a tentativa de brute force atual
+        char *result; //guarda o resultado da função encrypt
+
+        for(int j = 0; j < TAMANHOSENHA;j++) attempt_password[j] = 'A';//preenche a variavel com AAA...A
+
+        attempt_password[TAMANHOSENHA] = '\0'; //coloca \0 na ultima casa para criar uma string
+
+        while(1){
+            int aux = 0; //sempre comeca no char menos significativo o primeiro caracter
+
+            result = encrypt(attempt_password, TAMANHOSENHA);
+
+            if(strcmp(passwords.encrypted[i], result) == 0){//compara a senha encriptada com o resultado se for 0 quer dizer que é igual
+
+                for(int k = 0; k < TAMANHOSENHA; k++){
+
+                    passwords.decrypted[i][k] = attempt_password[k]; //copia a senha que passou no teste para a variavel
+                }
+                passwords.decrypted[i][TAMANHOSENHA] = '\0'; //transforma ela em string
+                free(result);
+                break; //sai do while(1) terminando o brute force dessa senha
+            }
+
+            free(result);
+            
+            //o algoritimo funciona parecido com uma soma binaria
+            //caso o incremento chegue ao maximo aquela casa ira para "0"
+            //e o proximo ira ser incrementado
+            while(attempt_password[aux] == 'Z'){ 
+                
+                attempt_password[aux] = 'A';
+                aux++;
+            }
+
+            if(aux >= TAMANHOSENHA){ //caso nenhuma senha passe no teste o resultado sera N/A
+                passwords.decrypted[i][0] = '\0';
+                strcpy(passwords.decrypted[i], "N/A");
+                break;
+            }
+
+            attempt_password[aux]++; //incrementa o char para iterar sobre as possibilidade
+        }
+    }
+
+    fclose(fencrypted);
 
     return passwords;
 }
@@ -48,11 +113,11 @@ int main(){
     
     pid_t pids[QTDFILES];
 
-    int p_index = -1;
+    int p_index = -1; //index do processo pai
     
     for(int i = 0; i < QTDFILES; i++){
 
-        if(pipe(fd[i]) == -1){
+        if(pipe(fd[i]) == -1){//inicia o pipe entre os forks
 
             perror("Erro no pipe");
             exit(1);
@@ -61,7 +126,7 @@ int main(){
 
         pids[i] = fork();
 
-        if(getpid() != pid_init){
+        if(getpid() != pid_init){//sai do loop caso seja um fork, as iterações são feitas apenas pelo pai
 
             p_index = i;
             break;
@@ -69,38 +134,51 @@ int main(){
     }
 
 
-    if(getpid() == pid_init){
+    if(getpid() == pid_init){//processo pai irá orquestrar os dados dos filhos
 
         for(int i = 0; i < QTDFILES; i++){
 
-            close(fd[i][1]);
+            close(fd[i][1]);//fecha o pipe de escrita
+
+            FILE* fdecrypted;
+            char filename[10];
+
+            sprintf(filename, "decrypt/%d", i);
+            strcat(filename, ".txt");//o nome do arquivo de saida sera decrypt/'numero'.txt
+
+            if((fdecrypted = fopen(filename, "w")) == NULL){//tenta criar o arquivo e termina o processo caso falhe
+
+                perror("Decrypt file could not be open\n");
+                exit(1);
+            }
 
             Passwords results;
 
-            read(fd[i][0], &results, sizeof(results));
+            read(fd[i][0], &results, sizeof(results));//recebe os dados do filho
 
-            for(int j = 0; j < QTDSENHASPORFILE; j++){
-                printf(results.strings[j]);
-                printf("\n");
+            for(int j = 0; j < QTDSENHASPORFILE; j++){//escreve todas as senhas encontradas no arquivo
+                fprintf(fdecrypted,results.decrypted[j]);
+                fprintf(fdecrypted,"\n");
             }
 
-            close(fd[i][0]);
+            fclose(fdecrypted); //fecha o arquivo
+            close(fd[i][0]);//fecha o pipe de leitura
         }
 
     }else{
 
         char filename[10];
 
-        sprintf(filename, "%d", p_index);
-        strcat(filename, ".txt");
+        sprintf(filename, "senhas/%d", p_index);
+        strcat(filename, ".txt");//o nome do arquivo de entrada precisa ser senhas/'numero'.txt
 
         Passwords results;
 
         results = brute_force(filename);
 
-        close(fd[p_index][0]);
-        write(fd[p_index][1], &results, sizeof(results));
-        close(fd[p_index][1]);
+        close(fd[p_index][0]);//fecha o pipe de leitura
+        write(fd[p_index][1], &results, sizeof(results));//passa os dados para o processo pai
+        close(fd[p_index][1]);//fecha o pipe de escrita
         exit(EXIT_SUCCESS);
     }
 
