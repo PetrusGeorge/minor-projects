@@ -8,14 +8,14 @@
 #define NUM_LETRAS 26
 #define ASCII_A 65
 
-#define QTDFILES 10 //quantidade de senhas na pasta senhas
+#define QTDFILES 10 //quantidade de arquivos na pasta senhas
 #define QTDSENHASPORFILE 10 //quantidade de senhas em cada arquivo da pasta senhas
 #define TAMANHOSENHA 4 //o tamanho da senha sem considera /0 ou /n
 
 typedef struct Passwords{
 
     char encrypted[QTDSENHASPORFILE][TAMANHOSENHA + 2];//guarda as senha encriptadas lidas do arquivo
-    char decrypted[QTDSENHASPORFILE][TAMANHOSENHA + 2];//guarda as senhas decrypitadas pelo programa
+    char decrypted[QTDSENHASPORFILE][TAMANHOSENHA + 2];//guarda as senhas decriptadas pelo programa
     //ambas consideram o caractere \n e \0 em seu tamanho inclusive quando não são usadas
 }Passwords;
 
@@ -34,7 +34,7 @@ void remove_newline(char* string){
 
     int i;
     for(i = 0; string[i] != '\0'; i++);//incrementa i até o final da string
-    if(string[i-1] == '\n') string[i-1] = '\0';//remove o \n se ele estiver anterios ao final da string
+    if(string[i-1] == '\n') string[i-1] = '\0';//remove o \n se ele estiver anterior ao final da string
 }
 
 Passwords brute_force(const char* file_name){
@@ -51,37 +51,34 @@ Passwords brute_force(const char* file_name){
 
     for(int i = 0; i < QTDSENHASPORFILE; i++){
 
-        if(fgets(passwords.encrypted[i], TAMANHOSENHA + 2, fencrypted) == NULL) break; //le cada linha das senhas e caso o arquivo acabe antes do esperado ocorre um break
+        if(fgets(passwords.encrypted[i], TAMANHOSENHA + 2, fencrypted) == NULL) break; //lê cada linha das senhas e caso o arquivo acabe antes do esperado ocorre um break
         remove_newline(passwords.encrypted[i]);
     }
 
-    for(int i = 0; i < QTDSENHASPORFILE; i++){//itera por cada linha das senhas
+    for(int i = 0; i < QTDSENHASPORFILE; i++){//itera por cada linha do arquivo
 
         char attempt_password[TAMANHOSENHA + 1]; //guarda a tentativa de brute force atual
-        char *result; //guarda o resultado da função encrypt
+        char result[TAMANHOSENHA+1]; //quadar o resultado da função encrypt em formato de string
+        char *result_not_formated; //guarda o resultado da função encrypt
 
         for(int j = 0; j < TAMANHOSENHA;j++) attempt_password[j] = 'A';//preenche a variavel com AAA...A
 
         attempt_password[TAMANHOSENHA] = '\0'; //coloca \0 na ultima casa para criar uma string
 
         while(1){
-            int aux = 0; //sempre comeca no char menos significativo o primeiro caracter
+            int aux = 0; //sempre comeca no char menos significativo, o primeiro caracter
 
-            result = encrypt(attempt_password, TAMANHOSENHA);
+            result_not_formated = encrypt(attempt_password, TAMANHOSENHA);
+            for(int j = 0; j < TAMANHOSENHA; j++)
+                result[j] = result_not_formated[j];
+            result[TAMANHOSENHA] = '\0'; //pega o resultado de encrypt e transforma em string
+            free(result_not_formated);
 
-            if(strcmp(passwords.encrypted[i], result) == 0){//compara a senha encriptada com o resultado se for 0 quer dizer que é igual
-
-                for(int k = 0; k < TAMANHOSENHA; k++){
-
-                    passwords.decrypted[i][k] = attempt_password[k]; //copia a senha que passou no teste para a variavel
-                }
-                passwords.decrypted[i][TAMANHOSENHA] = '\0'; //transforma ela em string
-                free(result);
+            if(strcmp(passwords.encrypted[i], result) == 0){//compara a senha encriptada com o resultado, se for 0 é igual
+                strcpy(passwords.decrypted[i], attempt_password); //copia a senha correta para variavel
                 break; //sai do while(1) terminando o brute force dessa senha
             }
 
-            free(result);
-            
             //o algoritimo funciona parecido com uma soma binaria
             //caso o incremento chegue ao maximo aquela casa ira para "0"
             //e o proximo ira ser incrementado
@@ -92,7 +89,6 @@ Passwords brute_force(const char* file_name){
             }
 
             if(aux >= TAMANHOSENHA){ //caso nenhuma senha passe no teste o resultado sera N/A
-                passwords.decrypted[i][0] = '\0';
                 strcpy(passwords.decrypted[i], "N/A");
                 break;
             }
@@ -141,7 +137,7 @@ int main(){
             close(fd[i][1]);//fecha o pipe de escrita
 
             FILE* fdecrypted;
-            char filename[10];
+            char filename[40];
 
             sprintf(filename, "decrypt/%d", i);
             strcat(filename, ".txt");//o nome do arquivo de saida sera decrypt/'numero'.txt
@@ -167,7 +163,7 @@ int main(){
 
     }else{
 
-        char filename[10];
+        char filename[40];
 
         sprintf(filename, "senhas/%d", p_index);
         strcat(filename, ".txt");//o nome do arquivo de entrada precisa ser senhas/'numero'.txt
