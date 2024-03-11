@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <time.h>
 
 pthread_mutex_t mutex;
 char flag;
@@ -35,11 +36,14 @@ void* count(void* p){
 
 int main(int argc, char *argv[])
 {
-
     if(argc < 3){
         printf("./path/to/bin 'num of threads' 'num of counter'\n");
         return 1;
     }
+
+    struct timespec begin, end; 
+    clock_gettime(CLOCK_REALTIME, &begin);
+
     int num_threads = atoi(argv[1]);
 
     size_t contador_max = atoi(argv[2]);
@@ -61,7 +65,13 @@ int main(int argc, char *argv[])
         contagem += r_value;
     }
 
-    printf("%zu\n", contagem);
+    clock_gettime(CLOCK_REALTIME, &end);
+
+    long seconds = end.tv_sec - begin.tv_sec;
+    long nanoseconds = end.tv_nsec - begin.tv_nsec;
+    double tempo_corrido = seconds + nanoseconds*1e-9;
+
+    printf("%zu %lf\n", contagem, tempo_corrido);
 
     return 0;
 }

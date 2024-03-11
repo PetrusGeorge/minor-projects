@@ -1,0 +1,5 @@
+Para executar basta ./benchmark.sh 'numero de threds' 'numero de contagem de cada thread'
+
+Caso benchmark.sh não seja executavel, deve-se executar 'chmod +x benchmark.sh' 
+
+Um arquivo chamado output.txt sera criado com os tempos de execução
