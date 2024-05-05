@@ -16,20 +16,27 @@ n:
 	.global _start
 
 _start:
+	// a = 3
 	ldr r1, =a
 	ldr r1, [r1]
 
+	// b = 4
 	ldr r2, =b
 	ldr r2, [r2]
 
+	// m = 10
 	ldr r3, =m
 	ldr r3, [r3]
 
+	// n = 0
 	ldr r4, =n
 	ldr r4, [r4]
 
+	// b >= m
 	cmp r2, r3
 	bge n_igual_m
+
+	// n >= a
 	cmp r4, r1
 	bge n_igual_m
 

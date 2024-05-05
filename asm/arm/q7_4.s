@@ -19,18 +19,22 @@ _start:
 	ldr r1, =second
 	ldr r1, [r1]
 
-	mov r2, #0
+	// result = 0
+	mov r3, #0
 
 	cmp r1, #0
 	blt mult_neg
 	bgt mult_pos
 
+	// second == 0
 	b end
 
 mult_pos:
+	// result += first
 	add r3, r0
 	sub r1, #1
 
+	// first == 0
 	cmp r1, #0
 	beq end
 
@@ -46,6 +50,7 @@ mult_neg:
 	b mult_neg
 
 end:
+	// store result
 	ldr r0, =result
 	str r3, [r0]
 
