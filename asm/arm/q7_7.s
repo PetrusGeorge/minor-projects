@@ -11,30 +11,40 @@ numerosDe1:
 
 _start:
 	ldr r0, =vetorx
+
+	// r2 counts number of 1's
 	mov r2, #0
-	mov r3, #64
+
+	// r3 counts iterations
+	mov r3, #0
 
 loop_64:
-	cmp r3, #0
-	beq end
+	// for(int i = 0; i < 64; i++)
+	cmp r3, #64
+	bge end
 
+	// vetorx[i]
 	ldrb r1, [r0]
 
-	cmp r1, #1
-	bne continua
-	bl  adiciona
+	// add counter if 1
+	cmp  r1, #1
+	bleq count
 
-continua:
+	// adds to iters
 	add r0, #1
-	sub r3, #1
+	add r3, #1
 
 	b loop_64
 
-adiciona:
+count:
 	add r2, #1
 	bx  lr
 
 end:
-	mov r7, #1
+	// store result
+	ldr r0, =numerosDe1
+	str r2, [r0]
+
 	mov r0, #0
+	mov r7, #1
 	swi 0

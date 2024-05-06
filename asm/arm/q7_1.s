@@ -34,20 +34,20 @@ _start:
 
 	// b >= m
 	cmp r2, r3
-	bge n_igual_m
+	bge n_eq_m
 
 	// n >= a
 	cmp r4, r1
-	bge n_igual_m
+	bge n_eq_m
 
 	b n_igual_b
 
-n_igual_m:
+n_eq_m:
 	ldr r0, =n
 	str r3, [r0]
 	b   end
 
-n_igual_b:
+n_eq_b:
 	ldr r0, =n
 	str r2, [r0]
 	b   end

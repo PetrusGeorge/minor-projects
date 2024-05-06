@@ -12,7 +12,7 @@ output:
 
 _start:
 
-	// r0 endereco de entrada
+	// r0 input address
 	ldr r0, =input
 
 	// r1 point to last space of output
